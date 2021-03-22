@@ -1,0 +1,179 @@
+---
+title: "Modeling Areal Data: Intro"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+library(tidyverse)
+library(mnormt)
+library(spdep)
+set.seed(03202021)
+```
+
+## Spatial Smoothing
+
+
+\vfill
+
+
+\vfill
+
+
+\vfill
+
+
+\vfill
+
+
+
+\vfill
+
+
+\vfill
+
+
+\newpage
+
+## Areal Data Models: Disease Mapping
+
+Areal data with counts is often associated with disease mapping, where there are two quantities for each areal unit:
+
+\vfill
+One way to think about the expected counts is
+
+\vfill
+\vfill
+However note that $\bar{r},$  and hence, $E_i$ is a not fixed, but is a function of the data. 
+
+\vfill
+
+An alternative is to use some standard rate for a given age group, such that $E_i = \sum_j n_{ij} r_j.$ 
+
+\vfill
+
+### Traditional Models
+
+Often counts are assumed to follow the Poisson model where
+
+
+\vfill
+
+Then the MLE of $\eta_i$ is $\frac{Y_i}{E_i}$. 
+
+\newpage
+
+### Poisson-Gamma Model
+
+Consider the following framework
+
+\vfill
+\vfill
+
+
+
+\vfill
+
+For the Poisson sampling model, the gamma prior is conjugate. This means that the posterior distribution $p(\eta_i | y_i)$ is also a gamma distribution, and in particular
+
+\vfill
+
+The mean of this distribution is
+\begin{eqnarray*}
+E(\eta_i | \boldsymbol{y}) = E(\eta_i| y_i) &=& \frac{y_i + a}{E_i + b} = \frac{y_i + \frac{\mu^2}{\sigma^2}}{E_i + \frac{\mu}{\sigma^2}}\\
+&=& \frac{E_i (\frac{y_i}{E_i})}{E_i + \frac{\mu}{\sigma^2}} + \frac{(\frac{\mu}{\sigma^2})\mu}{E_i + \frac{\mu}{\sigma2}}\\
+&=& w_i SMR_i + (1 - w_i) \mu,
+\end{eqnarray*}
+
+\vfill
+
+
+\newpage
+
+## Poisson-lognormal models
+
+
+The model can be written as 
+\begin{eqnarray*}
+Y_i | \psi_i &\sim& Poisson(E_i \exp(\psi_i))\\
+\psi_i &=& \boldsymbol{x_i^T}\boldsymbol{\beta} + \theta_i + \phi_i
+\end{eqnarray*}
+
+
+
+### Brook's Lemma and Markov Random Fields
+
+To consider areal data from a model-based perspective, it is necessary to obtain the joint distribution of the responses 
+$$p(y_1, \dots, y_n).$$
+
+\vfill
+
+From the joint distribution, the *full conditional distribution*
+$$p(y_i|y_j, j \neq i),$$
+is uniquely determined.
+
+\vfill
+
+
+\vfill
+
+When the areal data set is large, working with the full conditional distributions can be preferred to the full joint distribution.
+
+\vfill
+More specifically, the response $Y_i$ should only directly depend on the neighbors, 
+
+\newpage
+
+
+## Markov Random Field 
+
+The idea of using the local specification for determining the global form of the distribution is 
+
+\vfill
+
+An essential element of a MRF is a *clique*, which is a group of units where each unit is a neighbor of all units in the clique
+
+\vfill
+
+A *potential function* is a function that is exchangeable in the arguments. With continuous data a common potential is $(Y_i - Y_j)^2$ if $i \sim j$ ($i$ is a neighbor of $j$).
+
+\vfill
+
+### Gibbs Distribution
+
+A joint distribution $p(y_1, \dots, y_n)$ is a Gibbs distribution if it is a function of $Y_i$ only through the potential on cliques.
+
+\vfill
+
+Mathematically, this can be expressed as:
+$$p(y_1, \dots, y_n) \propto \exp \left(\gamma \sum_k \sum_{\alpha \in \mathcal{M}_k} \phi^{(k)}(y_{\alpha_1},y_{\alpha_2}, \dots, y_{\alpha_k} ) \right),$$
+where $\phi^{(k)}$ is a potential of order $k$, $\mathcal{M}_k$ is the collection of all subsets of size $k = {1, 2, ...}$(typically restricted to 2 in spatial settings), $\alpha$ indexes the set in $\mathcal{M}_k$.
+
+\vfill
+
+\newpage
+
+### Hammersley-Clifford Theorem
+
+The Hammersley-Clifford Theorem demonstrates that if we have a MRF that defines a unique joint distribution, 
+
+
+\vfill
+
+The converse was later proved, showing that a MRF could be sampled from the associated Gibbs distribution.
+
+\vfill
+
+### Model Specification
+
+With continuous data, a common choice for the joint distribution is the pairwise difference
+$$p(y_1, \dots, y_n) \propto \exp \left(-\frac{1}{2\tau^2} \sum_{i,j}(y_i - y_j)^2 I(i \sim j) \right)$$
+\vfill
+
+Then the full conditional distributions 
+
+\vfill
+\vfill
+
+\vfill
+
