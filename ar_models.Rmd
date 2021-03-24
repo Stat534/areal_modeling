@@ -1,0 +1,142 @@
+---
+title: "Conditional Autoregressive Models"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+library(tidyverse)
+library(mnormt)
+library(spdep)
+set.seed(03202021)
+```
+
+
+## Gaussian Model
+
+Suppose the full conditionals are specified as
+
+\vfill
+
+Then using Brooks' Lemma, the joint distribution is
+$$p(y_1, \dots, y_n) \propto \exp \left(-\frac{1}{2}\boldsymbol{y}^T D^{-1} (I - B) \boldsymbol{y} \right),$$
+where $B$ is a matrix with entries $b_{ij}$ and D is a diagonal matrix with diagonal elements $D_{ii} = \tau_i^2$.
+
+\vfill
+
+The previous equation suggests a multivariate normal distribution,
+
+\vfill
+
+
+\vfill
+
+
+\vfill
+
+\newpage
+
+Now the full conditional distribution can be written as
+$$Y_i|y_j, j\neq i \sim N \left(\sum_j w_{ij} y_j / w_{i+}, \tau^2 / w_{i+} \right)$$
+
+\vfill
+
+Similarly the joint distribution is now
+$$p(y_1, \dots, y_n) \propto \exp \left(-\frac{1}{2 \tau^2}\boldsymbol{y}^T  (D_w - W) \boldsymbol{y} \right)$$
+where $D_w$ is a diagonal matrix with diagonal entries $(D_w)_{ii} = w_{i+}$ 
+
+\vfill
+
+The joint distribution can also be re-written as
+$$p(y_1, \dots, y_n) \propto \exp \left(-\frac{1}{2 \tau^2} \sum_{i \neq j} w_{ij} (y_i - y_j)^2\right)$$
+
+\vfill
+
+However, both these formulations results in an improper distribution. This could be solved with a constraint, such as $Y_i = 0$.
+
+\vfill
+
+The result is the joint distribution is improper, despite proper full conditional distributions. 
+
+\vfill
+
+\newpage
+
+## IAR
+
+The IAR cannot be used to model data directly, rather this is used a prior specification 
+
+\vfill
+
+The impropriety can be remedied by defining a parameter $\rho$ such that
+
+
+\vfill
+
+
+\vfill
+
+With or without $\rho,$ $p(\boldsymbol{y})$ (or the Bayesian posterior when the CAR specification is placed on the spatial random effects) is proper.
+
+\vfill
+
+When using $\rho$, the full conditional becomes 
+
+\vfill
+
+## Simultaneous Autoregression Model
+
+Rather than specifying the distribution on $\boldsymbol{Y}$, as in the CAR specification, the distribution can be specified for $\boldsymbol{\epsilon}$ which induces a distribution for $\boldsymbol{Y}$.
+
+\vfill
+
+
+\vfill
+
+
+\vfill
+
+\newpage
+## SAR Model
+
+If the matrix $(I - B)$ is full rank, then 
+$$\boldsymbol{Y} \sim N \left(\boldsymbol{0},(I - B)^{-1} \tilde{D} ((I - B)^{-1})^T \right)$$
+
+\vfill
+
+If $\tilde{D} = \sigma^2 I$, then $\boldsymbol{Y} \sim N \left(\boldsymbol{0},\sigma^2 \left[(I - B)  (I - B)^T \right]^{-1} \right)$
+
+\vfill
+
+#### Choosing B
+
+There are two common approaches for choosing B
+
+\vfill
+
+
+\vfill
+
+
+
+\vfill
+
+SAR Models are often introduced in a regression context, where the residuals $(\boldsymbol{U})$ follow a SAR model.
+
+\vfill
+
+Let $\boldsymbol{U} = \boldsymbol{Y} - X \boldsymbol{\beta}$ and then $\boldsymbol{U} = B \boldsymbol{U} + \boldsymbol{\epsilon}$ which results in
+$$\boldsymbol{Y} = B \boldsymbol{Y} + (I-B) X \boldsymbol{\beta} + \boldsymbol{\epsilon}$$
+
+\vfill
+
+Hence the model contains a spatial weighting of neighbors $(B \boldsymbol{Y})$ and a regression component $((I-B) X \boldsymbol{\beta} )$.
+
+\vfill
+
+
+\vfill
+
+
+\vfill
+
